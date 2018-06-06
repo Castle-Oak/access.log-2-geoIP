@@ -30,10 +30,6 @@ outputPath = str(time.time()) + "-output.txt"
 apiDomain = 'freegeoip.net/json/' # This script will be rewritten for IPStack after July 1st 2018.
 threadCount = 64 # This is the number of concurrent connections to the API.
 
-# Intentionally left empty.
-
-
-
 print("Querying entries in", logPath, "with", str(threadCount), "threads.\n")
 
 coreRaw = []
