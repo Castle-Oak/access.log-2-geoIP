@@ -6,7 +6,6 @@ import os
 import sys
 import socket
 import time
-import re
 from multiprocessing.dummy import Pool
 
 # Check validity of log path.
