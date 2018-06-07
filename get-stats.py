@@ -33,7 +33,6 @@ print("Querying entries in", logPath, "with", str(threadCount), "threads.\n")
 
 coreRaw = []
 def main(ip):
-    global coreList
     call = apiDomain + ip
     http = urllib3.PoolManager()
     query = http.request('GET', call)
