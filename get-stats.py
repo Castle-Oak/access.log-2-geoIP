@@ -40,14 +40,16 @@ def main(ip):
     city = response['city']
     if city == "":
         city = "None"
-    state = response['region_name']
-    if state == "":
-        state = "None"
+    region = response['region_name']
+    if region == "":
+        region = response['country_name']
+        if region == "":
+            region = "None"
     try:
         ptr = socket.gethostbyaddr(ip)[0]
     except socket.herror:
         ptr = "NO PTR"
-    output = ip + "," + ptr + "," + city + "," + state
+    output = ip + "," + ptr + "," + city + "," + region
     coreRaw.append(output)
 
 IPUnsort = []
