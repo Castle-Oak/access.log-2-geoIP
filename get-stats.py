@@ -26,24 +26,25 @@ except:
 
 # Some variables for easy access.
 outputPath = str(time.time()) + "-output.txt"
-apiDomain = 'freegeoip.net/json/' # This script will be rewritten for IPStack after July 1st 2018.
+apiDomain = 'http://api.ipstack.com/' # This script will be rewritten for IPStack after July 1st 2018.
+apiKey = '?access_key=#Paste_API_Key_Here'
 threadCount = 64 # This is the number of concurrent connections to the API.
 
 print("Querying entries in", logPath, "with", str(threadCount), "threads.\n")
 
 coreRaw = []
 def main(ip):
-    call = apiDomain + ip
+    call = apiDomain + ip + apiKey
     http = urllib3.PoolManager()
     query = http.request('GET', call)
     response = json.loads(query.data.decode('utf-8'))
     city = response['city']
-    if city == "":
+    if city is None:
         city = "None"
     region = response['region_name']
-    if region == "":
+    if region is None:
         region = response['country_name']
-        if region == "":
+        if region is None:
             region = "None"
     try:
         ptr = socket.gethostbyaddr(ip)[0]
@@ -51,6 +52,7 @@ def main(ip):
         ptr = "NO PTR"
     output = ip + "," + ptr + "," + city + "," + region
     coreRaw.append(output)
+    print(output)
 
 IPUnsort = []
 for line in open(logPath, 'r'):
@@ -71,5 +73,5 @@ coreFinal = '\n'.join(coreSorted)
 with open(outputPath, 'a+') as template:
     template.write(coreFinal)
 
-print(logPath, " - Successful!\n")
+print("\n", logPath, " - Successful!\n")
 print("Results have been saved to", outputPath, "\n")
