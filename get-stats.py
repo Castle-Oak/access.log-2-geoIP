@@ -25,7 +25,7 @@ except:
     quit()
 
 # Some variables for easy access.
-outputPath = str(time.time()) + "-output.txt"
+outputPath = str(time.time()) + "-output.csv"
 apiDomain = 'http://api.ipstack.com/' # This script will be rewritten for IPStack after July 1st 2018.
 apiKey = '?access_key=#Paste_API_Key_Here'
 
