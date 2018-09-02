@@ -28,7 +28,6 @@ except:
 outputPath = str(time.time()) + "-output.txt"
 apiDomain = 'http://api.ipstack.com/' # This script will be rewritten for IPStack after July 1st 2018.
 apiKey = '?access_key=#Paste_API_Key_Here'
-threadCount = 64 # This is the number of concurrent connections to the API.
 
 print("Querying entries in", logPath, "with", str(threadCount), "threads.\n")
 
@@ -60,6 +59,8 @@ for line in open(logPath, 'r'):
     IPUnsort.append(Entry[0])
 
 IPUnique = numpy.unique(IPUnsort)
+
+threadCount = len(IPUnique)
 
 with Pool(threadCount) as thread:
     thread.map(main, IPUnique)
