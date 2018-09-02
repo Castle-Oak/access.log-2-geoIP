@@ -29,8 +29,6 @@ outputPath = str(time.time()) + "-output.txt"
 apiDomain = 'http://api.ipstack.com/' # This script will be rewritten for IPStack after July 1st 2018.
 apiKey = '?access_key=#Paste_API_Key_Here'
 
-print("Querying entries in", logPath, "with", str(threadCount), "threads.\n")
-
 coreRaw = []
 def main(ip):
     call = apiDomain + ip + apiKey
@@ -61,6 +59,8 @@ for line in open(logPath, 'r'):
 IPUnique = numpy.unique(IPUnsort)
 
 threadCount = len(IPUnique)
+
+print("Querying entries in", logPath, "with", str(threadCount), "threads.\n")
 
 with Pool(threadCount) as thread:
     thread.map(main, IPUnique)
