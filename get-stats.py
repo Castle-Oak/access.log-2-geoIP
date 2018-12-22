@@ -2,7 +2,6 @@
 import urllib3
 import json
 import numpy
-import os
 import sys
 import socket
 import time
@@ -26,10 +25,12 @@ except:
 
 # Some variables for easy access.
 outputPath = str(time.time()) + "-output.csv"
-apiDomain = 'http://api.ipstack.com/' # This script will be rewritten for IPStack after July 1st 2018.
+apiDomain = 'http://api.ipstack.com/'  # This script will be rewritten for IPStack after July 1st 2018.
 apiKey = '?access_key=#Paste_API_Key_Here'
 
 coreRaw = []
+
+
 def main(ip):
     call = apiDomain + ip + apiKey
     http = urllib3.PoolManager()
