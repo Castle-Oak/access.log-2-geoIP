@@ -7,31 +7,8 @@ import socket
 import time
 from multiprocessing.dummy import Pool
 
-# Check validity of log path.
-try:
-    logPath = sys.argv[1]
-except:
-    print("\nLog path cannot be empty.\n")
-    print("Usage: ./get-stats.py /var/log/apache2/access.log\n")
-    print("Results will be dumped to the current working directory in CSV format.\n")
-    quit()
 
-try:
-    open(logPath, 'r')
-except:
-    print("\nError reading log file\n")
-    print("Verify file path and permissions.\n")
-    quit()
-
-# Some variables for easy access.
-outputPath = str(time.time()) + "-output.csv"
-apiDomain = 'http://api.ipstack.com/'  # This script will be rewritten for IPStack after July 1st 2018.
-apiKey = '?access_key=#Paste_API_Key_Here'
-
-coreRaw = []
-
-
-def main(ip):
+def apiGet(ip):
     call = apiDomain + ip + apiKey
     http = urllib3.PoolManager()
     query = http.request('GET', call)
@@ -52,28 +29,56 @@ def main(ip):
     coreRaw.append(output)
     print(output)
 
-IPUnsort = []
-for line in open(logPath, 'r'):
-    Entry = line.split()
-    IPUnsort.append(Entry[0])
 
-IPUnique = numpy.unique(IPUnsort)
+def main():
+    IPUnsort = []
+    for line in open(logPath, 'r'):
+        Entry = line.split()
+        IPUnsort.append(Entry[0])
 
-threadCount = len(IPUnique)
+    IPUnique = numpy.unique(IPUnsort)
 
-print("Querying entries in", logPath, "with", str(threadCount), "threads.\n")
+    threadCount = len(IPUnique)
 
-with Pool(threadCount) as thread:
-    thread.map(main, IPUnique)
+    print("Querying entries in", logPath, "with", str(threadCount), "threads.\n")
 
-thread.close()
-thread.join()
+    with Pool(threadCount) as thread:
+        thread.map(apiGet, IPUnique)
 
-coreSorted = sorted(coreRaw)
-coreFinal = '\n'.join(coreSorted)
+    thread.close()
+    thread.join()
 
-with open(outputPath, 'a+') as template:
-    template.write(coreFinal)
+    coreSorted = sorted(coreRaw)
+    coreFinal = '\n'.join(coreSorted)
 
-print("\n", logPath, " - Successful!\n")
-print("Results have been saved to", outputPath, "\n")
+    with open(outputPath, 'a+') as template:
+        template.write(coreFinal)
+
+    print("\n", logPath, " - Successful!\n")
+    print("Results have been saved to", outputPath, "\n")
+
+
+if __name__ == "__main__":
+    try:
+        logPath = sys.argv[1]
+        userKey = sys.argv[2]
+    except:
+        print("\nLog path cannot be empty.\n")
+        print("Usage: ./get-stats.py /var/log/apache2/access.log IPStack_API_Key\n")
+        print("Results will be dumped to the current working directory in CSV format.\n")
+        quit()
+
+    try:
+        open(logPath, 'r')
+    except:
+        print("\nError reading log file\n")
+        print("Verify file path and permissions.\n")
+        quit()
+
+    # Some variables for easy access.
+    outputPath = str(time.time()) + "-output.csv"
+    apiDomain = 'http://api.ipstack.com/'
+    apiKey = '?access_key={}'.format(userKey)
+
+    coreRaw = []
+    main()
